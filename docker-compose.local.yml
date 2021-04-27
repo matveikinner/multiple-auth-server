@@ -1,0 +1,25 @@
+# Set Docker Compose version
+# See official documentation at https://docs.docker.com/compose/
+version: '3.8'
+
+services:
+  server:
+    container_name: mas-server
+    build:
+      context: ./
+      args:
+        ARG_ENV: development
+    environment:
+      DATABASE_HOST: database
+    ports:
+      - 3000:3000
+  database:
+    container_name: mas-database
+    image: postgres:13-alpine
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: root
+      POSTGRES_DB: postgres
+    ports:
+      - 5432:5432
