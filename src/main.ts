@@ -1,3 +1,4 @@
+import { ValidationPipe, ValidationPipeOptions } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import ConfigEnum from 'config/config.enum';
@@ -8,8 +9,11 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const configService: ConfigService = app.get(ConfigService);
-  const config = configService.get<SharedConfig>(ConfigEnum.SHARED);
+  const sharedconfig = configService.get<SharedConfig>(ConfigEnum.SHARED);
+  const validationConfig = configService.get<ValidationPipeOptions>(ConfigEnum.VALIDATION);
 
-  await app.listen(config?.port || 3000);
+  app.useGlobalPipes(new ValidationPipe(validationConfig));
+
+  await app.listen(sharedconfig?.port || 3000);
 }
 bootstrap();
